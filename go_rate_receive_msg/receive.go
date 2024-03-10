@@ -49,20 +49,7 @@ func main() {
 	}
 
 	// Create a new rate limiter
-
 	limiter := rate.NewLimiter(rate.Limit(1), 20)
-
-	// Start multiple goroutines to receive messages
-	// var wg sync.WaitGroup
-	// for i := 0; i < 3; i++ {
-	// 	wg.Add(1)
-	// 	go func() {
-	// 		receiveMessages(sqsClient, queueURL, limiter, rdb)
-	// 		wg.Done()
-	// 	}()
-	// }
-
-	// wg.Wait()
 
 	receiveMessages(sqsClient, queueURL, limiter, rdb)
 }
@@ -70,8 +57,6 @@ func receiveMessages(client *sqs.Client, queueURL string, limiter *rate.Limiter,
 	ctx := context.Background()
 
 	for {
-		//time.Sleep(1 * time.Second)
-
 		// Get the global counter value from Redis
 		counter, err := rdb.Get(ctx, "global_counter").Int()
 		if err != nil {
