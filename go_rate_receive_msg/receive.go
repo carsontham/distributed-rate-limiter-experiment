@@ -18,71 +18,7 @@ const (
 )
 
 func main() {
-
-	// cfg, err := config.LoadDefaultConfig(context.TODO(),
-	// 	config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider("test", "test", "")),
-	// 	config.WithRegion("us-east-1"),
-	// 	config.WithEndpointResolver(aws.EndpointResolverFunc(func(service, region string) (aws.Endpoint, error) {
-	// 		return aws.Endpoint{
-	// 			URL:           "http://localhost:4566",
-	// 			SigningRegion: "us-east-1",
-	// 		}, nil
-	// 	})),
-	// )
-	// if err != nil {
-	// 	fmt.Println("Error loading AWS config:", err)
-	// 	return
-	// }
-
-	// client := sqs.NewFromConfig(cfg)
-
-	// // Specify the URL of your SQS queue
-	// queueURL := "http://localhost:4566/000000000000/local-test-queue"
-
-	// // Create a new Redis client ( redis + redsync which implements locking for atomicity )
-	// rdb := redis.NewClient(&redis.Options{
-	// 	Addr: "localhost:6379",
-	// })
-
-	// exists, err := rdb.Exists(context.Background(), "global_counter").Result()
-	// if err != nil {
-	// 	fmt.Println("Error checking if global counter exists:", err)
-	// 	return
-	// }
-
-	// // If the global counter does not exist, initialize it
-	// if exists == 0 {
-	// 	err = rdb.Set(context.Background(), "global_counter", 0, 0).Err()
-	// 	if err != nil {
-	// 		fmt.Println("Error setting global counter:", err)
-	// 		return
-	// 	}
-	// }
-
-	// counter, err := rdb.Get(context.Background(), "global_counter").Int()
-	// if err != nil {
-	// 	fmt.Println("Error getting global counter:", err)
-	// 	return
-	// }
-
-	// if counter >= 500 {
-	// 	fmt.Println("Global counter has hit 500. Flushing DB.")
-	// 	_, err = rdb.FlushDB(context.Background()).Result()
-	// 	if err != nil {
-	// 		fmt.Println("Error clearing database:", err)
-	// 		return
-	// 	}
-
-	// 	if exists == 0 {
-	// 		err = rdb.Set(context.Background(), "global_counter", 0, 0).Err()
-	// 		if err != nil {
-	// 			fmt.Println("Error setting global counter:", err)
-	// 			return
-	// 		}
-	// 	}
-	// 	return
-	// }
-
+	// Create a new SQS client
 	sqsClient := GetSQSClient()
 
 	// Create a new Redis client
