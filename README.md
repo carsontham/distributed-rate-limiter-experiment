@@ -1,65 +1,40 @@
-Steps to Set Up LocalStack: https://docs.localstack.cloud/user-guide/aws/sqs/ 
+# Distributed Rate Limiting with Redis
+This experiment aims learn how to achieve distributed rate limiting using Redis :)
 
-Pull LocalStack Docker Image:
+To mimic a real-life problem that can occur in organizations, this project uses LocalStack SQS service which mimics a local Amazon Simple Queue Service (SQS).
 
-Open a terminal and run the following command to pull the LocalStack Docker image:
-docker pull localstack/localstack
+# Stimulated Problem
+For example, you have an application subscribing to a AWS Queue which continuously polls for messages. For each message polled, the application wants to send a request to an external organization. However, external organization does not want to be floaded with too many incoming API request. Thus, rate limiting is introduced. 
 
-Run LocalStack Container:
-Once the image is downloaded, run the LocalStack container using the following command:
+But if the application runs on multiple pods/servers, simple rate-limiting may not be sufficient since each pod only know information about itself and not information of other pods. This is where Distributed Rate Limiting can be achieved using Redis :D
 
-docker run -p 4566:4566 -p 8080:8080 -e SERVICES=sqs localstack/localstack
-This command maps the ports 4566 (AWS services) and 8080 (LocalStack web UI) from the container to your local machine. The SERVICES=sqs environment variable specifies that only the SQS service should be started.
-
-Wait for LocalStack to Start:
-LocalStack may take a moment to start. Once it's ready, you should see log messages indicating that services are available.
-Access LocalStack Web UI:
-
-Open your web browser and navigate to http://localhost:8080 to access the LocalStack web UI. This interface provides insights into the services and their status.
-Configure AWS CLI:
-
-Configure your AWS CLI to interact with LocalStack. Run the following command and enter placeholder values for access key, secret key, region, and output format:
+# Technologies used to experiment with Distributed Rate Limiting 
+- Using LocalStack to mimic AWS services https://github.com/localstack/localstack 
+- Redis client
+- Using different open-source rate-limiting tools:
+    - rate https://pkg.go.dev/golang.org/x/time/rate
+    - redis-rate https://github.com/go-redis/redis_rate
+    - uber-go https://github.com/uber-go/ratelimit
 
 
-aws configure --profile localstack
-AWS Access Key ID: Enter any value (e.g., test).
-AWS Secret Access Key: Enter any value (e.g., test).
-Default region name: Enter us-east-1.
-Default output format: Enter json.
+# Pre-requisite
+- Set up localstack and initialize it using following commands:
+    
+    docker run -p 4566:4566 -p 8080:8080 -e SERVICES=sqs localstack/localstack
 
+- Verify it is the LocalStack SQS is running via 
 
+    localstack status services
 
-Test SQS in LocalStack:
-Now that LocalStack is set up, let's test SQS:
+- Install Redis and initialize redis server
+    
+    redis-server
 
-Create an SQS Queue:
+- To populate the queue, send messages via:
+    go run send.go
 
-Run the following command to create an SQS queue using the AWS CLI and the localstack profile:
+- Receiving messages from distributed rate limiter using go-rate package using Redis:
+    go run receive.go
 
-bash
-Copy code
-aws sqs create-queue --queue-name local-test-queue --profile localstack
-Note the QueueUrl in the response; you'll use it in subsequent commands.
-
-Send a test message to the created SQS queue:
-http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/local-test-queue
-aws sqs send-message --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/local-test-queue --message-body "Hello, LocalStack!" --profile localstack
-Replace <Your-Queue-URL> with the actual QueueUrl from the previous step.
-
-Receive messages from the SQS queue:
-
-aws sqs receive-message --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/local-test-queue --max-number-of-messages 1 --profile localstack
-Again, replace <Your-Queue-URL> with the actual QueueUrl.
-
-
-In the LocalStack response you provided, it looks like the CreateQueue operation was successful, and the status code 200 indicates a successful request. However, it seems that the QueueUrl wasn't directly printed in the log. You can obtain the QueueUrl separately by using the aws sqs get-queue-url command. Here's how you can do it:
-
-aws sqs get-queue-url --queue-name local-test-queue --profile localstack
-This command retrieves the URL of the SQS queue named local-test-queue. The response will include the QueueUrl that you can use for sending and receiving messages.
-
-aws sqs send-message --queue-url <Your-Queue-URL> --message-body "Hello, LocalStack!" --profile localstack
-Replace <Your-Queue-URL> with the actual QueueUrl obtained from the get-queue-url command.
-
-aws sqs get-queue-url --queue-name local-test-queue --profile localstack
-This command should return a JSON response containing the QueueUrl. Ensure that the QueueUrl is correctly printed.
-
+- Receiving messages from distributed rate limiter using redis-rate package using Redis:
+    go run receive.go
