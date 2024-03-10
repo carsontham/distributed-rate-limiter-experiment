@@ -20,21 +20,23 @@ But if the application runs on multiple pods/servers, simple rate-limiting may n
 # Pre-requisite
 - Set up localstack and initialize it using following commands:
     
-    docker run -p 4566:4566 -p 8080:8080 -e SERVICES=sqs localstack/localstack
+    `docker run -p 4566:4566 -p 8080:8080 -e SERVICES=sqs localstack/localstack`
 
 - Verify it is the LocalStack SQS is running via 
 
-    localstack status services
+    `localstack status services`
 
 - Install Redis and initialize redis server
     
-    redis-server
+    `redis-server`
 
 - To populate the queue, send messages via:
-    go run send.go
+    `go run send.go`
 
 - Receiving messages from distributed rate limiter using go-rate package using Redis:
-    go run receive.go
+  
+    `go run receive.go`
 
 - Receiving messages from distributed rate limiter using redis-rate package using Redis:
-    go run receive.go
+  
+    `go run receive.go`
