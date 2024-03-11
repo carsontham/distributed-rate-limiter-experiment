@@ -14,7 +14,6 @@ But if the application runs on multiple pods/servers, simple rate-limiting may n
 - Using different open-source rate-limiting tools:
     - rate https://pkg.go.dev/golang.org/x/time/rate (Token Bucket Algorithm)
     - redis-rate https://github.com/go-redis/redis_rate (Leaky Bucket Algorithm)
-    - uber-go https://github.com/uber-go/ratelimit (Leaky Bucket Algorithm)
 
 
 # Prerequisite
