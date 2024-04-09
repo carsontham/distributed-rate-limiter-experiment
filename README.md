@@ -41,4 +41,5 @@ In highly distributed systems, each individual pods does not know how much reque
 # Learning Outcome
 - A Distributed Rate Limiter can be achieved by pairing Redis together with any of the existing rate-limiter packages
 - To prevent potential race conditions, locks can be introduced to ensure that the rate limiters running on different pods are always accessing accurate global counter values
+- Apart from code changes to introduce rate limiting, load balancers can be considered for this problem. However, this may be leaning towards infra-related changes and may be cumbersome should the rate-limit be changed.
      
