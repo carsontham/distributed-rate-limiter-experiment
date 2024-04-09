@@ -1,12 +1,10 @@
 # Distributed Rate Limiting with Redis
-This experiment aims to demonstrate how to achieve distributed rate limiting using Redis :)
+This experiment aims to demonstrate how to achieve distributed rate limiting using Redis.
 
-To mimic a real-life problem that can occur in organizations, this project uses [LocalStack](https://github.com/localstack/localstack) SQS service which mimics a local Amazon Simple Queue Service (SQS).
+To tackle a distributed rate-limiting in organizations, this project uses [LocalStack](https://github.com/localstack/localstack) SQS service which mimics a local Amazon Simple Queue Service (SQS).
 
-# Simulated Real Life Problem
-For example, you have an application subscribing to a Amazon SQS which continuously polls for messages. For each message polled, the application wants to perform certain actions, such as sending an API request to an external organization. However, if there are large amount of messages in the queue, it would mean large amount of requests being sent. However, external organizations does not want to be flooded with too many incoming API request. Thus, rate limiting is introduced. 
-
-But if the application runs on multiple pods/servers, simple rate-limiting may not be sufficient since each pod/server would only know information about itself and not information of other pods. This is where Distributed Rate Limiting can be achieved using Redis.
+# Problem Statement
+In highly distributed systems, each individual pods does not know how much requests have been received or sent by other pods. This can be a problem when trying to rate-limit the requests, since each pod/server would only know information about itself and not information of other pods. This experiment uses open-source tools to demonstrate rate-limiting on distributed systems. 
 
 # Technologies used to experiment with Distributed Rate Limiting 
 - Using LocalStack to mimic AWS services https://github.com/localstack/localstack 
